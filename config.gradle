@@ -1,0 +1,14 @@
+ext {
+    compileSdkVersion = 26
+    minSdkVersion = 15
+    targetSdkVersion = 26
+    versionCode = 22
+    versionName = "2.2.0"
+
+    //新版本描述信息
+    versionDesc = "1.新增获取当前下载状态，2.通知栏下载进度支持显示百分比，3.新增支持重定向地址Url地址下载（http返回码301/302)"
+    //项目的主页
+    siteUrl = "https://github.com/azhon/AppUpdate"
+    //gitHub仓库的地址
+    gitUrl = "https://github.com/azhon/AppUpdate.git"
+}

@@ -1,0 +1,7 @@
+include ':app', ':appupdate','appupdateX'
+//加入下面配置
+setBinding(new Binding([gradle: this]))
+evaluate(new File(
+        "/Users/summary/Work/plugin",  //这里是你的flutter module生成的目录dir,这里这样写代表需要集成flutter的Android项目的根目录，如果你的flutter module创建在其它目录，请在这里修改，如我这里的（"E://flutter_workspaces"）
+        'flutter_app/.android/include_flutter.groovy' //这个是include_flutter.groovy文件的路径
+))
