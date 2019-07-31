@@ -1,9 +1,14 @@
 package com.azhon.app;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.text.format.DateFormat;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +24,8 @@ import java.util.Date;
 
 import arouterdemo.ARouterConfig;
 import io.flutter.app.FlutterActivity;
+import io.flutter.plugin.common.MethodCall;
+import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugins.GeneratedPluginRegistrant;
 import io.flutter.view.FlutterView;
 
@@ -26,6 +33,10 @@ import io.flutter.view.FlutterView;
 public class ToFlutterActivity extends FlutterActivity {
 
     private TextView time;
+
+    private static String CHANNEL_NAVITE = "io/native.channel.method";
+
+    private String methodObj;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,8 +75,24 @@ public class ToFlutterActivity extends FlutterActivity {
 
         Toast.makeText(this,extra,Toast.LENGTH_SHORT).show();
 
+        new MethodChannel(getFlutterView(),CHANNEL_NAVITE).setMethodCallHandler((methodCall, result) -> {
+//            Log.d("TAG",methodCall.arguments.toString());
+            methodObj = methodCall.arguments.toString();
+            Toast.makeText(this,methodObj,Toast.LENGTH_LONG).show();
+            if (methodCall.method.equals("finish")){
 
+                Intent intent = new Intent();
+                intent.putExtra("key", methodCall.arguments.toString());
+                setResult(Activity.RESULT_OK,intent);
+                finish();
+                result.success("ok");
+            }else {
+                result.notImplemented();
+            }
+        });
     }
+
+
 
 
     /**

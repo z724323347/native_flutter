@@ -9,10 +9,12 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Toast;
 
@@ -67,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements OnDownloadListene
         findViewById(R.id.btn_flutter).setOnClickListener(this);
         findViewById(R.id.btn_jump).setOnClickListener(this);
         findViewById(R.id.btn_Module).setOnClickListener(this);
+        findViewById(R.id.btn_interceptor).setOnClickListener(this);
 //        删除旧版本安装包
 //        boolean b = ApkUtil.deleteOldApk(this, getExternalCacheDir().getPath() + "/appupdate.apk");
     }
@@ -102,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements OnDownloadListene
                 ARouter.getInstance()
                         .build(ARouterConfig.activity.APP_ACTIVITY_FLUTTER)
                         .withOptionsCompat(compat)
-                        .navigation();
+                        .navigation(this,100);
                 break;
             case R.id.btn_jump:
                 TestSerializable testSerializable = new TestSerializable("Titanic", 555);
@@ -146,6 +149,20 @@ public class MainActivity extends AppCompatActivity implements OnDownloadListene
                         });
                 break;
             default:
+                break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode){
+            case 100:
+                if (resultCode == Activity.RESULT_OK){
+                    Toast.makeText(this,"Flutter page，返回时传递的参数 \n" +data.getStringExtra("key"),Toast.LENGTH_LONG).show();
+                }
+
                 break;
         }
     }

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() => runApp(MyApp());
 
@@ -49,6 +50,8 @@ class _MyHomePageState extends State<MyHomePage> {
   String time = '';
   Timer timer;
 
+  static const nativeChannel = const MethodChannel('io/native.channel.method');
+
   void _incrementCounter() {
     setState(() {
       _counter++;
@@ -75,33 +78,58 @@ class _MyHomePageState extends State<MyHomePage> {
     timer.cancel();
   }
 
+  Future<Null> _finish() async {
+    try {
+      Map<String, dynamic> map = {
+        'url': 'https://github.com/z724323347/native_flutter',
+        'msg': 'github'
+      };
+      // 在通道上调用此方法 与native通信
+      final String result = await nativeChannel.invokeMethod('finish', map);
+    } on PlatformException catch (e) {}
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Flutter page event:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
-            ),
-            SizedBox(height: 20),
-            Text('$time'),
-          ],
+    return WillPopScope(
+      onWillPop: (){
+        //flutter module 参数统一返回到native端
+        return _finish();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          leading: GestureDetector(
+            onTap: () {
+              // Navigator.of(context).pop();
+              _finish();
+            },
+            child: Icon(Icons.arrow_back),
+          ),
+          title: Text('Flutter Page'),
+          centerTitle: true,
         ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                'Flutter page event:',
+              ),
+              Text(
+                '$_counter',
+                style: Theme.of(context).textTheme.display1,
+              ),
+              SizedBox(height: 20),
+              Text('$time'),
+            ],
+          ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: _incrementCounter,
+          tooltip: 'Increment',
+          child: Icon(Icons.add),
+        ), // This trailing comma makes auto-formatting nicer for build methods.
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }

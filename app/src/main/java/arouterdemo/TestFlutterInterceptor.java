@@ -30,7 +30,22 @@ public class TestFlutterInterceptor implements IInterceptor {
             });
 
             MainLooper.runOnUiThread(() -> ab.create().show());
-        } else {
+        } else if (ARouterConfig.activity.APP_ACTIVITY_INTERCEPTOR.equals(postcard.getPath())){
+            // 这里的弹窗仅做举例，代码写法不具有可参考价值
+            final AlertDialog.Builder ab = new AlertDialog.Builder(MainActivity.getThis());
+            ab.setCancelable(false);
+            ab.setTitle("温馨提醒");
+            ab.setMessage("想要跳转到下一个Activity么？(触发了\"/inter/activity\"拦截器，拦截了本次跳转)");
+            ab.setNegativeButton("继续", (dialog, which) -> callback.onContinue(postcard));
+            ab.setNeutralButton("算了", (dialog, which) -> callback.onInterrupt(null));
+            ab.setPositiveButton("加参数", (dialog, which) -> {
+                postcard.withString("extra", "我是在拦截器中附加的参数");
+                callback.onContinue(postcard);
+            });
+
+            MainLooper.runOnUiThread(() -> ab.create().show());
+        }
+        else {
             callback.onContinue(postcard);
         }
     }
