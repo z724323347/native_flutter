@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.alibaba.arouter'
 
 android {
     signingConfigs {
@@ -17,6 +18,13 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        //Arouter  config
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [AROUTER_MODULE_NAME: project.getName(),AROUTER_GENERATE_DOC:"enable"]
+            }
+        }
     }
     buildTypes {
         release {
@@ -43,4 +51,10 @@ dependencies {
     implementation project(':appupdate')
     // flutter 集成
     implementation project(':flutter')
+    // Arouter 集成
+    // 替换成最新版本, 需要注意的是api,要与compiler匹配使用，均使用最新版可以保证兼容
+    implementation 'com.alibaba:arouter-api:1.5.0'
+//    implementation 'com.alibaba:arouter-register:1.0.2'
+    annotationProcessor 'com.alibaba:arouter-compiler:1.2.2'
+    implementation 'org.jetbrains:annotations:15.0'
 }

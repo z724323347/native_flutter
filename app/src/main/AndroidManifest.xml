@@ -20,6 +20,8 @@
         </activity>
 
         <activity android:name=".ToFlutterActivity"/>
+        <activity android:name="arouterdemo.JumpActivity"/>
+        <activity android:name="arouterdemo.TestInterceptorActivity"/>
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}"

@@ -10,14 +10,19 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.alibaba.android.arouter.facade.annotation.Route;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import arouterdemo.ARouterConfig;
 import io.flutter.app.FlutterActivity;
 import io.flutter.plugins.GeneratedPluginRegistrant;
 import io.flutter.view.FlutterView;
 
+@Route(path = ARouterConfig.activity.APP_ACTIVITY_FLUTTER)
 public class ToFlutterActivity extends FlutterActivity {
 
     private TextView time;
@@ -51,6 +56,13 @@ public class ToFlutterActivity extends FlutterActivity {
 //        time.setText(dateToStamp(System.currentTimeMillis()));
         new TimeThread().start();
         this.addContentView(layout,lp);
+
+        String extra = getIntent().getStringExtra("extra");
+        if (extra == null){
+            extra = "没有参数";
+        }
+
+        Toast.makeText(this,extra,Toast.LENGTH_SHORT).show();
 
 
     }

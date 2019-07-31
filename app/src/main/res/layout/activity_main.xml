@@ -60,7 +60,36 @@
         android:layout_gravity="center"
         android:layout_marginHorizontal="16dp"
         android:textAllCaps="false"
-        android:text="Flutter" />
+        android:text="Flutter - ARouter" />
+
+    <Button
+        android:id="@+id/btn_jump"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginHorizontal="16dp"
+        android:textAllCaps="false"
+        android:text="ARouter" />
+
+    <Button
+        android:id="@+id/btn_Module"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginHorizontal="16dp"
+        android:textAllCaps="false"
+        android:text="ARouter_Module" />
+
+    <Button
+        android:id="@+id/btn_interceptor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginHorizontal="16dp"
+        android:textAllCaps="false"
+        android:text="ARouter_Interceptor" />
+
+
 
 
 </LinearLayout>

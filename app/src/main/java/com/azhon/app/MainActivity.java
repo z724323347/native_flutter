@@ -1,6 +1,7 @@
 package com.azhon.app;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -8,12 +9,16 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.alibaba.android.arouter.facade.Postcard;
+import com.alibaba.android.arouter.facade.callback.NavCallback;
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.azhon.appupdate.config.UpdateConfiguration;
 import com.azhon.appupdate.listener.OnButtonClickListener;
 import com.azhon.appupdate.listener.OnDownloadListener;
@@ -21,6 +26,14 @@ import com.azhon.appupdate.manager.DownloadManager;
 import com.daimajia.numberprogressbar.NumberProgressBar;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import arouterdemo.ARouterConfig;
+import arouterdemo.TestObj;
+import arouterdemo.TestSerializable;
 
 /**
  * 项目名:    AppUpdate
@@ -34,6 +47,8 @@ import java.io.File;
 
 public class MainActivity extends AppCompatActivity implements OnDownloadListener, View.OnClickListener, OnButtonClickListener {
 
+    private static Activity activity;
+
     private NumberProgressBar progressBar;
     private DownloadManager manager;
     private String url = "https://dc2d8d5b0b9641aa7fb44379ca67b370.dd.cdntips.com/imtt.dd.qq.com/16891/34D3EECDE5B27CFBE996173932357FE9.apk?mkey=5d2873007ae0dcd2&f=184b&fsname=com.tencent.mobileqq_8.0.8_1218.apk&csr=1bbd&cip=122.224.250.39&proto=https";
@@ -42,16 +57,24 @@ public class MainActivity extends AppCompatActivity implements OnDownloadListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setTitle("一个简单好用的版本更新库");
+        activity = this;
+        setTitle("Demo");
         progressBar = findViewById(R.id.number_progress_bar);
         findViewById(R.id.btn_1).setOnClickListener(this);
         findViewById(R.id.btn_2).setOnClickListener(this);
         findViewById(R.id.btn_3).setOnClickListener(this);
         findViewById(R.id.btn_4).setOnClickListener(this);
         findViewById(R.id.btn_flutter).setOnClickListener(this);
+        findViewById(R.id.btn_jump).setOnClickListener(this);
+        findViewById(R.id.btn_Module).setOnClickListener(this);
 //        删除旧版本安装包
 //        boolean b = ApkUtil.deleteOldApk(this, getExternalCacheDir().getPath() + "/appupdate.apk");
     }
+
+    public static Activity getThis() {
+        return activity;
+    }
+
 
     @Override
     public void onClick(View v) {
@@ -71,9 +94,56 @@ public class MainActivity extends AppCompatActivity implements OnDownloadListene
                 }
                 break;
             case R.id.btn_flutter:
-                Toast.makeText(this,"flutter",Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(this,ToFlutterActivity.class);
-                startActivity(intent);
+//                Toast.makeText(this,"flutter",Toast.LENGTH_LONG).show();
+//                Intent intent = new Intent(this,ToFlutterActivity.class);
+//                startActivity(intent);
+                ActivityOptionsCompat compat = ActivityOptionsCompat
+                        .makeScaleUpAnimation(v,v.getWidth()/2,v.getHeight()/2,0,0);
+                ARouter.getInstance()
+                        .build(ARouterConfig.activity.APP_ACTIVITY_FLUTTER)
+                        .withOptionsCompat(compat)
+                        .navigation();
+                break;
+            case R.id.btn_jump:
+                TestSerializable testSerializable = new TestSerializable("Titanic", 555);
+                TestObj testObj = new TestObj("T_obj1",101);
+                List<TestObj> objList = new ArrayList<>();
+                objList.add(testObj);
+                Map<String,List<TestObj>> map = new HashMap<>();
+                map.put("testMap",objList);
+
+                ARouter.getInstance()
+                        .build(ARouterConfig.activity.ROUTER_JUMP_ACTIVITY)
+                        //带参数跳转
+                        .withString("name","test_key")
+                        .withSerializable("ser", testSerializable)
+//                        .withObject("obj",testObj)
+//                        .withObject("testObj",testObj)
+//                        .withObject("map",map)
+                        .withTransition(R.anim.slide_in_bottom, R.anim.slide_out_bottom)
+                        .navigation();
+                break;
+
+            case R.id.btn_Module:
+                ARouter.getInstance()
+                        .build(ARouterConfig.module.app_test)
+                        .navigation();
+                break;
+            case R.id.btn_interceptor:
+                ARouter.getInstance()
+                        .build(ARouterConfig.activity.APP_ACTIVITY_INTERCEPTOR)
+                        .navigation(this, new NavCallback() {
+                            @Override
+                            public void onArrival(Postcard postcard) {
+
+                            }
+
+                            @Override
+                            public void onInterrupt(Postcard postcard) {
+                                Log.d("ARouter", "被拦截了");
+                                super.onInterrupt(postcard);
+                            }
+                        });
                 break;
             default:
                 break;
