@@ -2,6 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_app/custom_route.dart';
+import 'package:flutter_app/mixrs_native.dart';
+import 'package:flutter_app/mixrs_native_layout.dart';
 
 void main() => runApp(MyApp());
 
@@ -48,6 +51,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   String time = '';
+  String initString = '';
   Timer timer;
 
   static const nativeChannel = const MethodChannel('io/native.channel.method');
@@ -67,6 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    _init();
     timer = Timer.periodic(new Duration(seconds: 1), (timer) {
       _getTime();
     });
@@ -76,6 +81,24 @@ class _MyHomePageState extends State<MyHomePage> {
   void dispose() {
     super.dispose();
     timer.cancel();
+  }
+
+  Future<String> _init() async {
+    try {
+      // 在通道上调用此方法 与native通信
+      String result = await nativeChannel.invokeMethod('init');
+      print('1------------------------------- $result');
+      setState(() {
+        initString = result;
+      });
+      return result;
+    } on PlatformException catch (e) {
+      print('2------------------------------- ${e.toString()}');
+      setState(() {
+        initString = e.toString();
+      });
+      return e.toString();
+    }
   }
 
   Future<Null> _finish() async {
@@ -89,10 +112,17 @@ class _MyHomePageState extends State<MyHomePage> {
     } on PlatformException catch (e) {}
   }
 
+   Future<Null> _show() async {
+    try {
+      // 在通道上调用此方法 与native通信
+      final String result = await nativeChannel.invokeMethod('show');
+    } on PlatformException catch (e) {}
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: (){
+      onWillPop: () {
         //flutter module 参数统一返回到native端
         return _finish();
       },
@@ -112,8 +142,22 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+              RaisedButton(
+                onPressed: (){
+                  _show();
+                  Navigator.of(context).push(CustomRoute(MixrsPage()));
+                },
+                child: Text('进入 MixrsPage View'),
+              ),
+              RaisedButton(
+                onPressed: (){
+                  _show();
+                  Navigator.of(context).push(CustomRoute(MixrsLayoutPage()));
+                },
+                child: Text('进入 MixrsPage Layout'),
+              ),
               Text(
-                'Flutter page event:',
+                '$initString',
               ),
               Text(
                 '$_counter',

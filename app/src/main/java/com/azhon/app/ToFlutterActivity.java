@@ -23,6 +23,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import arouterdemo.ARouterConfig;
+import flutter.NativeLayoutFlutterPlugin;
+import flutter.NativeViewFlutterPlugin;
 import io.flutter.app.FlutterActivity;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -36,12 +38,17 @@ public class ToFlutterActivity extends FlutterActivity {
 
     private static String CHANNEL_NAVITE = "io/native.channel.method";
 
+    private String extra;
     private String methodObj;
+    private View layout;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         GeneratedPluginRegistrant.registerWith(this);
+        NativeViewFlutterPlugin.registerWith(this);
+        NativeLayoutFlutterPlugin.registerWith(this);
         ViewGroup view =(ViewGroup)findViewById(android.R.id.content);
 
 
@@ -62,14 +69,14 @@ public class ToFlutterActivity extends FlutterActivity {
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         LayoutInflater inflater = getLayoutInflater();
-        View layout = inflater.inflate(R.layout.activity_in_flutter,null);
+        layout = inflater.inflate(R.layout.activity_in_flutter,null);
         time = layout.findViewById(R.id.tv_time);
 //        time.setText(dateToStamp(System.currentTimeMillis()));
         new TimeThread().start();
         this.addContentView(layout,lp);
 
-        String extra = getIntent().getStringExtra("extra");
-        if (extra == null){
+        extra = getIntent().getStringExtra("extra");
+        if (extra == ""){
             extra = "没有参数";
         }
 
@@ -77,18 +84,46 @@ public class ToFlutterActivity extends FlutterActivity {
 
         new MethodChannel(getFlutterView(),CHANNEL_NAVITE).setMethodCallHandler((methodCall, result) -> {
 //            Log.d("TAG",methodCall.arguments.toString());
-            methodObj = methodCall.arguments.toString();
-            Toast.makeText(this,methodObj,Toast.LENGTH_LONG).show();
-            if (methodCall.method.equals("finish")){
-
-                Intent intent = new Intent();
-                intent.putExtra("key", methodCall.arguments.toString());
-                setResult(Activity.RESULT_OK,intent);
-                finish();
-                result.success("ok");
-            }else {
-                result.notImplemented();
+            if (null != methodCall.arguments){
+               methodObj = methodCall.arguments.toString();
             }
+            Toast.makeText(this,methodObj,Toast.LENGTH_LONG).show();
+
+            switch (methodCall.method){
+                case "finish":
+                    Intent intent = new Intent();
+                    intent.putExtra("key", methodCall.arguments.toString());
+                    setResult(Activity.RESULT_OK,intent);
+                    finish();
+                    result.success("ok");
+                    break;
+
+                case "init":
+                    result.success(extra);
+                    break;
+
+                case "show":
+                    Log.d("---------" ,"================");
+                    layout.setVisibility(View.GONE);
+                    break;
+
+                default:
+                    result.notImplemented();
+                    break;
+            }
+//            if (methodCall.method.equals("finish")){
+//
+//                Intent intent = new Intent();
+//                intent.putExtra("key", methodCall.arguments.toString());
+//                setResult(Activity.RESULT_OK,intent);
+//                finish();
+//                result.success("ok");
+//            }else if (methodCall.method.equals("init")){
+//                result.success(extra);
+//            }
+//            else {
+//                result.notImplemented();
+//            }
         });
     }
 
