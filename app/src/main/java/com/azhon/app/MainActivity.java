@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -14,7 +15,6 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Toast;
 
@@ -36,6 +36,7 @@ import java.util.Map;
 import arouterdemo.ARouterConfig;
 import arouterdemo.TestObj;
 import arouterdemo.TestSerializable;
+import service.KuboService;
 
 /**
  * 项目名:    AppUpdate
@@ -70,8 +71,10 @@ public class MainActivity extends AppCompatActivity implements OnDownloadListene
         findViewById(R.id.btn_jump).setOnClickListener(this);
         findViewById(R.id.btn_Module).setOnClickListener(this);
         findViewById(R.id.btn_interceptor).setOnClickListener(this);
+        findViewById(R.id.btn_service).setOnClickListener(this);
 //        删除旧版本安装包
 //        boolean b = ApkUtil.deleteOldApk(this, getExternalCacheDir().getPath() + "/appupdate.apk");
+
     }
 
     public static Activity getThis() {
@@ -147,6 +150,16 @@ public class MainActivity extends AppCompatActivity implements OnDownloadListene
                                 super.onInterrupt(postcard);
                             }
                         });
+                break;
+            case R.id.btn_service:
+//                startService(new Intent(this, FirstService.class));
+                Intent intent =new Intent(this, KuboService.class);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        //android8.0以上通过startForegroundService启动service
+                        startForegroundService(intent);
+                    } else {
+                        startService(intent);
+                }
                 break;
             default:
                 break;

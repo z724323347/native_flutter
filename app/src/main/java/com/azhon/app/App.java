@@ -18,6 +18,7 @@ public class App extends Application {
 
         initARouter();
 
+        FlutterBootInit();
 
     }
 
@@ -31,4 +32,12 @@ public class App extends Application {
         // 尽可能早，推荐在Application中初始化
         ARouter.init(this);
     }
+
+    /**
+     * FlutterBootInit
+     */
+    private void FlutterBootInit(){
+//        FlutterBoot.init(new platform)
+    }
+
 }
