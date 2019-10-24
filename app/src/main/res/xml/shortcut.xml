@@ -1,0 +1,29 @@
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+<!--    <shortcut-->
+<!--        android:enabled="true"-->
+<!--        android:icon="@mipmap/ic_launcher"-->
+<!--        android:shortcutDisabledMessage="Native"-->
+<!--        android:shortcutId="publish"-->
+<!--        android:shortcutLongLabel="Native-2"-->
+<!--        android:shortcutShortLabel="Native-3">-->
+<!--        <intent-->
+<!--            android:action="android.intent.action.VIEW"-->
+<!--            android:targetClass="com.azhon.app.MainActivity"-->
+<!--            android:targetPackage="com.azhon.app" />-->
+<!--        <categories android:name="android.shortcut.conversation" />-->
+<!--    </shortcut>-->
+
+<!--    <shortcut-->
+<!--        android:enabled="true"-->
+<!--        android:icon="@mipmap/ic_launcher"-->
+<!--        android:shortcutDisabledMessage="Flutter2"-->
+<!--        android:shortcutId="write"-->
+<!--        android:shortcutLongLabel="Flutter2-2"-->
+<!--        android:shortcutShortLabel="Flutter2-3">-->
+<!--        <intent-->
+<!--            android:action="android.intent.action.VIEW"-->
+<!--            android:targetClass="com.azhon.app.ToFlutterActivity"-->
+<!--            android:targetPackage="com.azhon.app" />-->
+<!--        <categories android:name="android.shortcut.conversation" />-->
+<!--    </shortcut>-->
+</shortcuts>

@@ -4,13 +4,18 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ShortcutInfo;
+import android.content.pm.ShortcutManager;
 import android.graphics.Color;
+import android.graphics.drawable.Icon;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -29,6 +34,7 @@ import com.daimajia.numberprogressbar.NumberProgressBar;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements OnDownloadListene
     private DownloadManager manager;
     private String url = "https://dc2d8d5b0b9641aa7fb44379ca67b370.dd.cdntips.com/imtt.dd.qq.com/16891/34D3EECDE5B27CFBE996173932357FE9.apk?mkey=5d2873007ae0dcd2&f=184b&fsname=com.tencent.mobileqq_8.0.8_1218.apk&csr=1bbd&cip=122.224.250.39&proto=https";
 
+    private ShortcutManager mShortcutManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +82,46 @@ public class MainActivity extends AppCompatActivity implements OnDownloadListene
 //        删除旧版本安装包
 //        boolean b = ApkUtil.deleteOldApk(this, getExternalCacheDir().getPath() + "/appupdate.apk");
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1){
+            mShortcutManager = getSystemService(ShortcutManager.class);
+            getNewShortcutInfo();
+        }
+    }
+
+    /**
+     * 动态添加三个
+     */
+    @RequiresApi(api = Build.VERSION_CODES.N_MR1)
+    private void getNewShortcutInfo() {
+        ShortcutInfo shortcut_1 = new ShortcutInfo.Builder(this,"id1")
+                .setShortLabel("Web site")
+                .setLongLabel("web_baidu")
+                .setIcon(Icon.createWithResource(this,R.drawable.bg_button))
+                .setIntent(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.baidu.com")))
+                .build();
+        // 按下返回按钮跳转的activity
+        Intent intent1 = new Intent(this, MainActivity.class);
+        intent1.setAction(Intent.ACTION_VIEW);
+        // 目标activity
+        Intent intent2 = new Intent(this,ToFlutterActivity.class);
+        intent2.setAction("com.azhon.app.ToFlutterActivity");
+        Intent[] intents = new Intent[2];
+        intents[0] = intent1;
+        intents[1] = intent2;
+        ShortcutInfo shortcut2 = new ShortcutInfo.Builder(this, "id2")
+                .setShortLabel("app")
+                .setLongLabel("ToFlutterActivity")
+                .setIcon(Icon.createWithResource(this, R.mipmap.ic_launcher))
+                .setIntents(intents)
+                .build();
+        ShortcutInfo shortcut3 = new ShortcutInfo.Builder(this, "id3")
+                .setShortLabel("Web site")
+                .setLongLabel("web_github")
+                .setIcon(Icon.createWithResource(this, R.drawable.ic_dialog_default))
+                .setIntent(new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("https://www.github.com/")))
+                .build();
+        mShortcutManager.setDynamicShortcuts(Arrays.asList(shortcut_1,shortcut2,shortcut3));
     }
 
     public static Activity getThis() {
