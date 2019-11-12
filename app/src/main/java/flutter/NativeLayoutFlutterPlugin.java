@@ -9,6 +9,6 @@ public class NativeLayoutFlutterPlugin {
         if (registry.hasPlugin(key)) return;
 
         PluginRegistry.Registrar registrar = registry.registrarFor(key);
-        registrar.platformViewRegistry().registerViewFactory("plugins.nightfarmer.top/nativelayout", new NativeLayoutFactory(registrar.messenger()));
+        registrar.platformViewRegistry().registerViewFactory("plugins.nightfarmer.top/nativelayout", new NativeLayoutFactory(registrar));
     }
 }

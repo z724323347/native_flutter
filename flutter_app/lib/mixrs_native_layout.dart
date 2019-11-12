@@ -48,6 +48,7 @@ class _MixrsLayoutPageState extends State<MixrsLayoutPage> {
 
   Future<void> setNativeViewText(String text) async {
     assert(text != null);
-    return _channel.invokeMethod('setLayoutText', text);
+    Map _k = {'text': text, 'img': 'assets/image/ic.png'};
+    return _channel.invokeMethod('setLayoutText', _k);
   }
 }

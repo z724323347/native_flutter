@@ -2,9 +2,11 @@ package flutter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -15,18 +17,21 @@ import java.util.Map;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
+import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.plugin.platform.PlatformView;
 
 public class NativeLayout implements PlatformView, MethodChannel.MethodCallHandler {
 
     private final View nativeLayout;
     private TextView textView;
+    private ImageView imageView;
     String nString = "我是来自Android的原生 layout";
     String myContent;
 
-    public NativeLayout(Context context, BinaryMessenger messenger, int id, Map<String, Object> params) {
+    public NativeLayout(Context context, PluginRegistry.Registrar messenger, int id, Map<String, Object> params) {
         View view = LayoutInflater.from(context).inflate(R.layout.layout_in_flutter, null,true);
         textView = view.findViewById(R.id.tv_layoyt_flutter);
+        imageView =view.findViewById(R.id.iv_layoyt_flutter);
         textView.setText(" 来自  NativeLayout，布局文件中的原生 textview");
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -40,7 +45,7 @@ public class NativeLayout implements PlatformView, MethodChannel.MethodCallHandl
             textView.setText(nString + "\n flutter端对象 :" +myContent);
         }
         //如何更改已经实例化的原生组件的状态，可以通过MethodCall来实现
-        MethodChannel channel = new MethodChannel(messenger,"plugins.nightfarmer.top/nativelayout_" +id);
+        MethodChannel channel = new MethodChannel(messenger.messenger(),"plugins.nightfarmer.top/nativelayout_" +id);
         channel.setMethodCallHandler(this);
     }
     @Override
@@ -56,7 +61,10 @@ public class NativeLayout implements PlatformView, MethodChannel.MethodCallHandl
     @Override
     public void onMethodCall(@NonNull MethodCall methodCall, @NonNull MethodChannel.Result result) {
         if ("setLayoutText".equals(methodCall.method)) {
-            String text = (String) methodCall.arguments;
+            Map<String, Object> obj = (Map<String, Object>) methodCall.arguments;
+            String text = (String) obj.get("text");
+            String img = (String) obj.get("img");
+            Log.e("TAG", img);
             textView.setText(nString + "\n init Flutter:\n"+ myContent +"\nonMethodCall实现:\n"  +text);
             result.success(null);
         }

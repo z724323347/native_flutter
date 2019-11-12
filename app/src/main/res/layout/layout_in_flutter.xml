@@ -15,6 +15,7 @@
         android:background="@color/colorAccent">
 
         <ImageView
+            android:id="@+id/iv_layoyt_flutter"
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:scaleType="fitXY"

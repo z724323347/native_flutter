@@ -14,12 +14,16 @@
         android:orientation="vertical"
         android:background="@color/colorAccent">
 
-        <TextView
+<!--        <TextView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="100dp"-->
+<!--            android:textColor="@android:color/white"-->
+<!--            android:gravity="center"-->
+<!--            android:text="Android Native Layout"/>-->
+        <ImageView
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:textColor="@android:color/white"
-            android:gravity="center"
-            android:text="Android Native Layout"/>
+            android:src="@drawable/ic_dialog"/>
         <TextView
             android:id="@+id/tv_time"
             android:layout_width="match_parent"
